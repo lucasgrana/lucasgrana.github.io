@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vocem",
+      "sha256_cert_fingerprints": ["30:74:5F:89:B9:5E:29:CE:4D:DC:3B:A4:E7:BE:4C:C3:C5:76:ED:1D:29:E3:04:E5:5D:B9:17:2C:5E:45:B6:1F"]
+    }
+  }
+]
