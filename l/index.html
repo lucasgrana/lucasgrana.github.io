@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vocem</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f7f7fb; --card: #fff; --text: #1c1b2e; --muted: #5d5b73; --accent: #3f3d8f; --on-accent: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14131f; --card: #211f33; --text: #eeedf7; --muted: #b0aec6; --accent: #b9b7ff; --on-accent: #1c1b2e; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { width: 100%; max-width: 400px; background: var(--card); border-radius: 20px; padding: 32px 24px; text-align: center; }
+  h1 { margin: 0 0 8px; font-size: 28px; }
+  p { margin: 0 0 20px; color: var(--muted); line-height: 1.45; }
+  a { display: block; width: 100%; padding: 14px; border-radius: 12px; font: 600 16px system-ui, sans-serif; text-decoration: none; margin-bottom: 10px; }
+  #play { background: var(--accent); color: var(--on-accent); }
+  #open { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  [hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Vocem</h1>
+  <p id="intro"></p>
+  <div id="shared" hidden>
+    <a id="play" rel="noopener"></a>
+    <a id="open" hidden></a>
+    <p id="ios" style="margin:20px 0 0;font-size:14px"></p>
+  </div>
+</main>
+<script>
+  // Lista compartida (spec 006 de Vocem). Con la app instalada, Android abre
+  // la app directamente y esta página no se ve.
+  var es = !/^en/i.test(navigator.language || "");
+  var t = es ? {
+    intro: "Te compartieron una lista de reproducción de tu coro. Instalá Vocem, ingresá a tu coro y volvé a abrir este link para guardarte una copia.",
+    invalid: "Este link de lista no es válido. Pedile uno nuevo a quien te lo compartió.",
+    play: "Instalar desde Google Play",
+    open: "Ya tengo la app",
+    ios: "En iPhone, Vocem todavía no está disponible."
+  } : {
+    intro: "Someone shared a playlist from your choir. Install Vocem, join your choir and open this link again to save a copy.",
+    invalid: "This playlist link isn't valid. Ask whoever shared it for a new one.",
+    play: "Get it on Google Play",
+    open: "I already have the app",
+    ios: "Vocem isn't available on iPhone yet."
+  };
+  document.documentElement.lang = es ? "es" : "en";
+  var raw = new URLSearchParams(location.search).get("t") || "";
+  var code = raw.toUpperCase().replace(/[\s-]/g, "");
+  var intro = document.getElementById("intro");
+  if (!/^[0-9A-Z]{10}$/.test(code)) {
+    intro.textContent = t.invalid;
+  } else {
+    intro.textContent = t.intro;
+    document.getElementById("shared").hidden = false;
+    var play = document.getElementById("play");
+    play.textContent = t.play;
+    play.href = "https://play.google.com/store/apps/details?id=app.vocem";
+    if (/android/i.test(navigator.userAgent)) {
+      var open = document.getElementById("open");
+      open.textContent = t.open;
+      open.href = "intent://lucasgrana.github.io/l/?t=" + code + "#Intent;scheme=https;package=app.vocem;end";
+      open.hidden = false;
+    } else {
+      document.getElementById("ios").textContent = t.ios;
+    }
+  }
+</script>
+</body>
+</html>
